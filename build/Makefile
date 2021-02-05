@@ -6,7 +6,11 @@ OMP=-fopenmp
 OPT=-O3
 DEBUG=-g -Wall -Wno-reorder
 CUDA_DEBUG=-g -G
-CUDA_CC_FLAGS=--generate-code arch=compute_30,code=sm_30 -m64 -Xcompiler -rdynamic -Xcompiler -fopenmp
+# arch and code changed to "50": CUDA >= 10.2 does not support "30" any more:
+# https://stackoverflow.com/questions/64774548/unsupported-gpu-architecture-compute-30-on-a-cuda-5-capable-gpu
+# using -Wno-deprecated-gpu-targets to suppress warnings of architectures being deprecated
+# TODO: perhaps this could be done programmatically
+CUDA_CC_FLAGS=--generate-code arch=compute_50,code=sm_50 -m64 -Xcompiler -rdynamic -Xcompiler -fopenmp -Wno-deprecated-gpu-targets
 LD_LIBS=-lcuda -lcudart -lcublas -lrt -llapack -lgomp 
 #LIB_INCLUDE=-L /usr/local/cuda/lib64
 CUDA_INCLUDE=-I../ -I../include -I../cub -I/usr/local/cuda/include -I/usr/local/cuda/NVIDIA_CUDA-7.0_Samples/common/inc 
